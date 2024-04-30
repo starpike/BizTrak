@@ -1,0 +1,38 @@
+# Dependency directories
+node_modules/
+**/packages/
+
+# Built application files
+**/[Bb]in/
+**/[Oo]bj/
+build/
+
+# Logs and databases
+*.log
+*.log.*
+*.txt
+
+# Environment settings
+.env
+appsettings*.json
+
+# IDE settings
+.vs/
+*.user
+*.suo
+.vscode/
+*.sublime-workspace
+*.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*~
+
+# Temp files
+tmp/
+temp/
+
+.fake
