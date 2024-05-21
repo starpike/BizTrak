@@ -15,4 +15,21 @@ public class QuotesController(IQuoteRepository quoteRepository) : ControllerBase
         var quotes = await quoteRepository.AllQuotesAsync();
         return Ok(quotes);
     }
+
+    [HttpGet]
+    [Route("search")]
+    public async Task<IActionResult> GetQuotes([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string search = "")
+    {
+        var pagedQuotes = await quoteRepository.PagedQuotes(page, pageSize, search);
+
+        var response = new
+        {
+            Data = pagedQuotes.Quotes,
+            TotalCount = pagedQuotes.Total,
+            Page = page,
+            PageSize = pageSize
+        };
+
+        return Ok(response);
+    }
 }

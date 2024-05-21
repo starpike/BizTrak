@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import "@fontsource/nunito"; // Defaults to weight 400
+import "@fontsource/nunito/400.css"; // Specify weight
+import "@fontsource/nunito/500.css"; // Specify weight
+import "@fontsource/nunito/700.css"; // Specify weight
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

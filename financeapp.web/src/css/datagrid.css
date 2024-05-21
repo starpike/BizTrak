@@ -1,0 +1,57 @@
+:root {
+    --grid-header-bg-color: #eef2f7;
+    --grid-padding: 0.75em;
+  }
+
+/* style.css */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: var(--grid-header-bg-color);
+    color: #313a46;
+}
+
+thead th, tbody td {
+    border-bottom: 1px solid #ddd;
+    padding: var(--grid-padding);
+    text-align: left;
+}
+
+.responsive-table a {
+    color: var(--default-font-color);
+}
+
+/* Responsive styling */
+@media (max-width: 600px) {
+    thead {
+        display: none; /* Hide the header row at small screen sizes */
+    }
+    table, tbody, tr, td {
+        display: block;
+        width: 100%;
+        min-width: 320px !important;
+    }
+    tr {
+        margin-bottom: 15px; /* Space out the "cards" */
+    }
+    td {
+        padding-left: 40% !important;
+        position: relative;
+        padding-top: 10px !important;
+        box-sizing: border-box; /* Ensures padding does not add to width */
+    }
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%; /* Adjust width as necessary */
+        padding-right: 10px;
+        white-space: nowrap; /* Ensure the label is in one line */
+        text-align: left;
+        font-weight: bold;
+    }
+}
+

@@ -1,104 +1,121 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useRef, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import Quotes from './components/Quotes';
+import Breadcrumbs from './components/Breadcrumbs';
 
-function App() {
-  return (
-    <Router>
-      <div className="container">
-        <Header />
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Navigate to="/quotes" replace />} />
-          <Route path="/quotes" element={<Quotes />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-}
+import './css/app.css';
+import TitleIcon from './logo.svg'; // Assuming SVG loader is configured
 
-function Header() {
-  return (
-    <header className="py-3 mb-3 border-bottom">
-      <div className="d-flex flex-column flex-md-row align-items-center pb-1 mb-1">
-        <a href="/" className="d-flex align-items-center text-dark text-decoration-none">
-          <span className="fs-2">Business Tracker</span>
-        </a>
-      </div>
-    </header>
-  );
-}
-
-function Navigation() {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <ul className="navbar-nav">
-          <li className="nav-item">
-            <Link className="nav-link" to="/quotes">Quotes</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/invoices">Invoices</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/clients">Clients</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/expenses">Expenses</Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  );
-}
-
-function Quotes() {
-  const [quotes, setQuotes] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const apiUrl = `${process.env.REACT_APP_API_URL}/quotes`;
-
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => setQuotes(data))
-      .catch(error => {
-        console.error('Error fetching quotes:', error);
-        setError('Failed to load quotes');
-      });
-  }, []);
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-  };
-
-  return (
-    <div className="container">
-      <div className="row bg-info">
-        <div className="col text-left p-2"><strong>Quotes:</strong></div>
-      </div>
-      <div className="row bg-dark text-white">
-        <div className="col text-left p-2"><strong>Ref</strong></div>
-        <div className="col text-left p-2"><strong>Quote Title</strong></div>
-        <div className="col text-left p-2"><strong>Date</strong></div>
-      </div>
-      {quotes.map((quote, index) => (
-        <div key={index} className={`row ${index % 2 === 0 ? 'bg-light' : ''}`}>
-          <div className="col text-left p-2">{quote.quoteRef.toUpperCase()}</div>
-          <div className="col text-left p-2">{quote.quoteTitle}</div>
-          <div className="col text-left p-2">{formatDate(quote.quoteDate)}</div>
-        </div>
-      ))}
+const Dashboard = () => (
+    <div className="card card-flush">
+        <div className="card-header">Dashboard</div>
+        <div className="card-body pt-6">More content beyond the sidebar here.</div>
     </div>
-  );
-}
+);
+
+const PageWrapper = ({ title, children }) => (
+    <div>
+        <div className="container-fluid">
+            <Breadcrumbs />
+            {children}
+        </div>
+    </div>
+);
+
+function Header({ title }) {
+    return (
+        <div className="bg-white py-2 px-4">
+            <span className="fs-6">{title}</span>
+        </div>
+    );
+};
+
+const NavigationLink = ({ to, label }) => {
+    const location = useLocation();
+    const isActive = location.pathname === to;
+    return (
+        <li className="nav-item">
+            <NavLink className={`nav-link ${isActive ? 'active' : ''}`} to={to}>
+                {label}
+            </NavLink>
+        </li>
+    );
+};
+
+const App = () => {
+    const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+    const sidebarRef = useRef(null);
+    const togglerRef = useRef(null);
+
+    const handleNavCollapse = () => {
+        document.body.style.overflow = isNavCollapsed ? 'hidden' : '';
+        setIsNavCollapsed(!isNavCollapsed);
+    }
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!sidebarRef.current?.contains(event.target) && !togglerRef.current?.contains(event.target)) {
+                setIsNavCollapsed(true);
+                document.body.style.overflow = '';
+            }
+        };
+
+        const handleResize = () => {
+            setIsNavCollapsed(true);
+            document.body.style.overflow = '';
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return (
+        <Router>
+            <div className="container-fluid">
+                <div className="row">
+                    <nav ref={sidebarRef} className={`side-bar bg-side-bar display-med-block ${!isNavCollapsed ? 'show-side-bar' : ''}`}>
+                        <div className="pt-3">
+                            <NavLink to="/" className="center-flex text-decoration-none">
+                                <img src={TitleIcon} className="h-20px p-3" />
+                            </NavLink>
+                            <hr />
+                            <ul className="nav nav-pills flex-column">
+                                <NavigationLink to="/" label="Dashboard" />
+                                <NavigationLink to="/quotes" label="Quotes" />
+                                <NavigationLink to="/invoices" label="Invoices" />
+                                <NavigationLink to="/clients" label="Clients" />
+                                <NavigationLink to="/expenses" label="Expenses" />
+                            </ul>
+                        </div>
+                    </nav>
+                    <main className="col-auto">
+                        <div className="flex-box flex-box-h-align-end navbar-toggler ">
+                            <button ref={togglerRef} onClick={handleNavCollapse} className="p-0 ml-3 display-med-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                                    <title>Menu</title>
+                                    <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeMiterlimit="10" d="M4 7h22M4 15h22M4 23h22"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="plr-6">
+                            <Routes>
+                                <Route path="/" element={<Dashboard />} />
+                                <Route path="/quotes" element={<PageWrapper title="Quotes"><Quotes /></PageWrapper>} />
+                                <Route path="/invoices" element={<PageWrapper title="Invoices" />} />
+                                <Route path="/clients" element={<PageWrapper title="Clients" />} />
+                                <Route path="/expenses" element={<PageWrapper title="Expenses" />} />
+                            </Routes>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </Router>
+    );
+};
 
 export default App;
