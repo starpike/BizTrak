@@ -3,16 +3,22 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { PublicClientApplication } from '@azure/msal-browser';
+import { MsalProvider } from '@azure/msal-react';
+import { msalConfig } from './authConfig';
 import "@fontsource/nunito"; // Defaults to weight 400
 import "@fontsource/nunito/400.css"; // Specify weight
 import "@fontsource/nunito/500.css"; // Specify weight
 import "@fontsource/nunito/700.css"; // Specify weight
 
+const msalInstance = new PublicClientApplication(msalConfig);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <MsalProvider instance={msalInstance}>
+      <App />
+    </MsalProvider>
   </React.StrictMode>
 );
 

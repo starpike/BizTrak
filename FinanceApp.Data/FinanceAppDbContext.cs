@@ -39,6 +39,13 @@ public class FinanceAppDbContext : DbContext
             .Property(e => e.Id)
             .ValueGeneratedOnAdd();
 
+        modelBuilder.Entity<Quote>()
+            .Property(e => e.QuoteDate)
+            .HasConversion(
+            d => d, // No conversion needed as we ensure it is UTC
+            d => DateTime.SpecifyKind(d, DateTimeKind.Utc)
+        );
+
         modelBuilder.Entity<Invoice>()
             .HasKey(e => e.Id);
 

@@ -3,6 +3,8 @@ namespace FinanceApp.Domain;
 
 public class Quote
 {
+    private DateTime quoteDate;
+
     public string GenerateUniqueReference(int quoteId)
     {
         // Current DateTime in a specific format
@@ -17,6 +19,10 @@ public class Quote
     public Client? Client { get; set; }
     public string? QuoteRef { get; set; }
     public string? QuoteTitle { get; set; }
-    public DateTime QuoteDate { get; set; }
+    public DateTime QuoteDate
+    {
+        get => quoteDate;
+        set => quoteDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+    }
     public List<Job>? Jobs { get; set; }
 }

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import Pagination from './Pagination'
+import Pagination from '../Pagination'
 import axios from 'axios';
-import '../css/cards.css';
-import '../css/datagrid.css';
 
-function Quotes() {
+function QuotesList({ onAdd }) {
     const [quotes, setQuotes] = useState([]);
     const [error, setError] = useState(null);
     const [totalCount, setTotalCount] = useState(0);
@@ -34,7 +32,7 @@ function Quotes() {
     }
 
     const handleSearchChange = (event) => {
-        if (event.target.value.length == 0 ||event.target.value.length > 1) {
+        if (event.target.value.length === 0 ||event.target.value.length > 1) {
             setSearch(event.target.value);
             setPage(1);
         }
@@ -51,7 +49,7 @@ function Quotes() {
                 <div className="card-title">QUOTES:</div>
                 <div className="card-controls">
                     <input type="text" className='mlr-1' placeholder='search quotes...' onChange={handleSearchChange} />
-                    <button type="button" className="btn">Add Quote</button>
+                    <button type="button" className="btn" onClick={onAdd}>Add Quote</button>
                 </div>
             </div>
             <div className="card-body">
@@ -83,4 +81,4 @@ function Quotes() {
     );
 }
 
-export default Quotes;
+export default QuotesList;

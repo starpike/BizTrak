@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import Quotes from './components/Quotes';
+import QuotesWrapper from './components/quotes/QuotesWrapper';
 import Breadcrumbs from './components/Breadcrumbs';
-
 import './css/app.css';
+import './css/cards.css';
+import './css/datagrid.css';
 import TitleIcon from './logo.svg'; // Assuming SVG loader is configured
 
 const Dashboard = () => (
     <div className="card card-flush">
-        <div className="card-header">Dashboard</div>
+        <div className="card-header">
+        <div className="card-title">DASHBOARD:</div>
+        </div>
         <div className="card-body pt-6">More content beyond the sidebar here.</div>
     </div>
 );
@@ -104,8 +107,8 @@ const App = () => {
                         </div>
                         <div className="plr-6">
                             <Routes>
-                                <Route path="/" element={<Dashboard />} />
-                                <Route path="/quotes" element={<PageWrapper title="Quotes"><Quotes /></PageWrapper>} />
+                                <Route path="/" element={<PageWrapper title="Dashboard"><Dashboard /></PageWrapper>} />
+                                <Route path="/quotes" element={<PageWrapper title="Quotes"><QuotesWrapper /></PageWrapper>} />
                                 <Route path="/invoices" element={<PageWrapper title="Invoices" />} />
                                 <Route path="/clients" element={<PageWrapper title="Clients" />} />
                                 <Route path="/expenses" element={<PageWrapper title="Expenses" />} />

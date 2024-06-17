@@ -22,11 +22,13 @@ public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRe
             query = query.Where(q => q.QuoteRef.Contains(search) || q.QuoteTitle.Contains(search));
         }
 
-        var dto = new PagedQuotes {
+        var dto = new PagedQuotes
+        {
             Total = await query.CountAsync()
         };
 
         dto.Quotes = await query
+            .OrderByDescending(q => q.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
@@ -39,4 +41,30 @@ public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRe
         var quote = await _financeAppDbContext.Quotes.FindAsync(id);
         return quote!;
     }
+
+    public async Task<Quote> CreateQuoteAsync(Quote quote)
+    {
+        if (quote == null)
+        {
+            throw new ArgumentNullException(nameof(quote), "Quote cannot be null");
+        }
+
+        try
+        {
+            _financeAppDbContext.Quotes.Add(quote);
+            await _financeAppDbContext.SaveChangesAsync();
+            quote.QuoteRef = quote.GenerateUniqueReference(quote.Id);
+            await _financeAppDbContext.SaveChangesAsync();
+            return quote;
+        }
+        catch (DbUpdateException dbEx)
+        {
+            throw new InvalidOperationException("An error occurred while saving the quote to the database.", dbEx);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An unexpected error occurred while creating the quote.", ex);
+        }
+    }
+
 }

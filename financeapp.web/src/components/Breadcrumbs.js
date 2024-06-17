@@ -9,7 +9,7 @@ const Breadcrumbs = () => {
   return (
     <div className="breadcrumb">
       <Link to="/" className="breadcrumb-item">Home</Link>
-      {pathnames.length > 0 && <span className="breadcrumb-separator">›</span>}
+      {pathnames.length > 0 && <span className="breadcrumb-separator">&#9654;</span>}
       {pathnames.map((value, index) => {
         const last = index === pathnames.length - 1;
         const to = `/${pathnames.slice(0, index + 1).join('/')}`;

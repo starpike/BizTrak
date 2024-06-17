@@ -24,8 +24,10 @@
   
   .breadcrumb-separator {
     margin: 0 8px;
+    font-weight: 400;
+    font-size: 0.6em;
+    margin-top: 1px;
     color: #ccc;
-    font-size: 18px;
     user-select: none; /* Prevent selection of the separator */
   }
   
