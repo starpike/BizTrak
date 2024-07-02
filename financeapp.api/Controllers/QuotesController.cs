@@ -1,5 +1,6 @@
 namespace FinanceApp.Api;
 using FinanceApp.Data;
+using FinanceApp.DTOs;
 using FinanceApp.Domain;
 using FinanceApp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,18 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
     private readonly IQuoteRepository quoteRepository = quoteRepository;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Job>>> GetQuotes()
+    public async Task<ActionResult<IEnumerable<Quote>>> GetQuotes()
     {
         var quotes = await quoteRepository.AllQuotesAsync();
         return Ok(quotes);
+    }
+
+    [HttpGet]
+    [Route("getquotebyid")]
+    public async Task<ActionResult<Quote>> GetQuoteById(int quoteId)
+    {
+        var quote = await quoteRepository.GetQuoteAsync(quoteId);
+        return Ok(quote);
     }
 
     [HttpGet]
@@ -37,13 +46,17 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateQuote([FromBody] Quote quote)
+    public async Task<IActionResult> CreateQuote([FromBody] QuoteDTO quote)
     {
         try
         {
             var createdQuote = await quoteService.CreateQuoteAsync(quote);
             logger.LogInformation("Quote created successfully.");
             return CreatedAtAction(nameof(CreateQuote), new { id = createdQuote.Id }, createdQuote);
+        }
+        catch (ValidationException ex) {
+            logger.LogError(ex, "Validation error occurred while creating the quote.");
+            return BadRequest(ex.Errors);
         }
         catch (Exception ex)
         {

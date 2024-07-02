@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import NavigationLink from '../NavigationLink';
 import Pagination from '../Pagination'
 import axios from 'axios';
 
-function QuotesList({ onAdd }) {
+function QuotesList({ onAdd, onSelect }) {
     const [quotes, setQuotes] = useState([]);
     const [error, setError] = useState(null);
     const [totalCount, setTotalCount] = useState(0);
@@ -66,7 +67,7 @@ function QuotesList({ onAdd }) {
                     <tbody>
                         {quotes.map((quote, index) => (
                             <tr key={index}>
-                                <td data-label="Quote Ref:"><NavLink to="/">{quote.quoteRef.toUpperCase()}</NavLink></td>
+                                <td data-label="Quote Ref:" className='nowrap'><button className="button-as-link" onClick={() => onSelect(quote.id)}>{quote.quoteRef.toUpperCase()}</button></td>
                                 <td data-label="Quote Title:">{quote.quoteTitle}</td>
                                 <td data-label="Client Name:">{quote.client.firstName + ' ' + quote.client.lastName}</td>
                                 <td data-label="Client Address:">{quote.client.addressLine1}</td>

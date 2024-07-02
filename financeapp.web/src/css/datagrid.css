@@ -14,10 +14,15 @@ thead {
     color: #313a46;
 }
 
+th {
+    white-space: nowrap;
+}
+
 thead th, tbody td {
     border-bottom: 1px solid #ddd;
     padding: var(--grid-padding);
     text-align: left;
+    vertical-align: top;
 }
 
 .responsive-table a {
@@ -49,9 +54,13 @@ thead th, tbody td {
         left: 10px;
         width: 45%; /* Adjust width as necessary */
         padding-right: 10px;
-        white-space: nowrap; /* Ensure the label is in one line */
+        white-space: nowrap;
         text-align: left;
         font-weight: bold;
+    }
+
+    .nowrap {
+        white-space: nowrap;
     }
 }
 

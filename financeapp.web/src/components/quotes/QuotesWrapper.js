@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import AddQuoteForm from './AddQuoteForm';
+import ViewQuote from './ViewQuote';
 import QuotesList from './QuotesList';
+import { Actions } from '../utilities/constants.js'
 
 function QuotesWrapper() {
 
-    const [isAddingQuote, setIsAddingQuote] = useState(false);
+    const [currentAction, setCurrentAction] = useState(Actions.LIST);
+    const [quoteId, setQuoteId] = useState(0);
+    const location = useLocation();
 
-    const handleAddQuoteClick = () => {
-        setIsAddingQuote(true);
-    };
+    useEffect(() => {
+        setCurrentAction(Actions.LIST);
+      }, [location]);
 
     const handleSaveQuote = (newQuote) => {
-        setIsAddingQuote(false);
     };
 
     const handleCancelQuote = () => {
-        setIsAddingQuote(false);
+        setCurrentAction(Actions.LIST)
     };
 
-    return (<div>
-        {
-            isAddingQuote ? (
-                <AddQuoteForm onSave={handleSaveQuote} onCancel={handleCancelQuote} />
-            ) : (
-                <QuotesList onAdd={handleAddQuoteClick} />
-            )
-        }
+    const handleAddQuote = () => {
+        setCurrentAction(Actions.ADD)
+    }
+
+    const handleViewQuote = (quoteId) => {
+        setCurrentAction(Actions.VIEW)
+        setQuoteId(quoteId);
+    }
+
+    return (
+    <div>
+        {currentAction === Actions.LIST ? (
+            <QuotesList onAdd={handleAddQuote} onSelect={handleViewQuote} />
+        ) : currentAction === Actions.ADD ? (
+            <AddQuoteForm onSave={handleSaveQuote} onCancel={handleCancelQuote} />
+        ) : currentAction === Actions.VIEW ? (
+            <ViewQuote onCancel={handleCancelQuote} quoteId={quoteId} />
+        ) : null}
     </div>);
 }
 

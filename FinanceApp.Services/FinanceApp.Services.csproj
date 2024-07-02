@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FinanceApp.Domain\FinanceApp.Domain.csproj" />
     <ProjectReference Include="..\FinanceApp.Data\FinanceApp.Data.csproj" />
+    <ProjectReference Include="..\FinanceApp.DTOs\FinanceApp.DTOs.csproj" />
   </ItemGroup>
   <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">

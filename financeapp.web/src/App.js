@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import QuotesWrapper from './components/quotes/QuotesWrapper';
 import Breadcrumbs from './components/Breadcrumbs';
+import NavigationLink from './components/NavigationLink';
 import './css/app.css';
 import './css/cards.css';
 import './css/datagrid.css';
@@ -25,30 +26,11 @@ const PageWrapper = ({ title, children }) => (
     </div>
 );
 
-function Header({ title }) {
-    return (
-        <div className="bg-white py-2 px-4">
-            <span className="fs-6">{title}</span>
-        </div>
-    );
-};
-
-const NavigationLink = ({ to, label }) => {
-    const location = useLocation();
-    const isActive = location.pathname === to;
-    return (
-        <li className="nav-item">
-            <NavLink className={`nav-link ${isActive ? 'active' : ''}`} to={to}>
-                {label}
-            </NavLink>
-        </li>
-    );
-};
-
 const App = () => {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const sidebarRef = useRef(null);
     const togglerRef = useRef(null);
+    //const navigate = useNavigate();
 
     const handleNavCollapse = () => {
         document.body.style.overflow = isNavCollapsed ? 'hidden' : '';
@@ -84,7 +66,7 @@ const App = () => {
                     <nav ref={sidebarRef} className={`side-bar bg-side-bar display-med-block ${!isNavCollapsed ? 'show-side-bar' : ''}`}>
                         <div className="pt-3">
                             <NavLink to="/" className="center-flex text-decoration-none">
-                                <img src={TitleIcon} className="h-20px p-3" />
+                                <img alt="Biztrak" src={TitleIcon} className="h-20px p-3" />
                             </NavLink>
                             <hr />
                             <ul className="nav nav-pills flex-column">
@@ -96,7 +78,7 @@ const App = () => {
                             </ul>
                         </div>
                     </nav>
-                    <main className="col-auto">
+                    <main className="col">
                         <div className="flex-box flex-box-h-align-end navbar-toggler ">
                             <button ref={togglerRef} onClick={handleNavCollapse} className="p-0 ml-3 display-med-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
@@ -112,6 +94,7 @@ const App = () => {
                                 <Route path="/invoices" element={<PageWrapper title="Invoices" />} />
                                 <Route path="/clients" element={<PageWrapper title="Clients" />} />
                                 <Route path="/expenses" element={<PageWrapper title="Expenses" />} />
+                                <Route path="/newquote" element={<PageWrapper title="New Quote" />} />
                             </Routes>
                         </div>
                     </main>

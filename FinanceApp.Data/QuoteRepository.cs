@@ -38,7 +38,7 @@ public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRe
 
     public async Task<Quote> GetQuoteAsync(int id)
     {
-        var quote = await _financeAppDbContext.Quotes.FindAsync(id);
+        var quote = await _financeAppDbContext.Quotes.Include(q => q.Client).FirstOrDefaultAsync(q => q.Id == id);
         return quote!;
     }
 
