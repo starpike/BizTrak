@@ -22,7 +22,7 @@ namespace FinanceApp.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FinanceApp.Domain.Client", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,53 +30,24 @@ namespace FinanceApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AddressLine1")
+                    b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("AddressLine2")
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("AddressLine3")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Postcode")
+                    b.Property<string>("Phone")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("FinanceApp.Domain.Expense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Expenses");
-                });
-
-            modelBuilder.Entity("FinanceApp.Domain.Invoice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Invoices");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Job", b =>
@@ -87,30 +58,27 @@ namespace FinanceApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ActualCost")
-                        .HasColumnType("numeric");
+                    b.Property<bool>("AllDay")
+                        .HasColumnType("boolean");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
+                    b.Property<DateTime>("End")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("EstimatedCost")
-                        .HasColumnType("numeric");
-
-                    b.Property<int?>("InvoiceId")
+                    b.Property<int>("QuoteId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("JobTitle")
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("QuoteId")
-                        .HasColumnType("integer");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("QuoteId");
+                    b.HasIndex("QuoteId")
+                        .IsUnique();
 
                     b.ToTable("Jobs");
                 });
@@ -123,26 +91,44 @@ namespace FinanceApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClientId")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("QuoteDate")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("QuoteRef")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
-                    b.Property<string>("QuoteTitle")
-                        .HasColumnType("text");
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.User", b =>
+            modelBuilder.Entity("FinanceApp.Domain.QuoteMaterial", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,49 +136,108 @@ namespace FinanceApp.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("MaterialName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("QuoteId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("QuoteId");
+
+                    b.ToTable("QuoteMaterials");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.QuoteTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<decimal>("EstimatedDuration")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("OrderIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuoteId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuoteId");
+
+                    b.ToTable("QuoteTasks");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Job", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Invoice", "Invoice")
-                        .WithMany("Jobs")
-                        .HasForeignKey("InvoiceId");
-
                     b.HasOne("FinanceApp.Domain.Quote", "Quote")
-                        .WithMany("Jobs")
-                        .HasForeignKey("QuoteId");
-
-                    b.Navigation("Invoice");
+                        .WithOne()
+                        .HasForeignKey("FinanceApp.Domain.Job", "QuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Quote");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Quote", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Client", "Client")
+                    b.HasOne("FinanceApp.Domain.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("ClientId")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.QuoteMaterial", b =>
+                {
+                    b.HasOne("FinanceApp.Domain.Quote", "Quote")
+                        .WithMany("Materials")
+                        .HasForeignKey("QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Invoice", b =>
+            modelBuilder.Entity("FinanceApp.Domain.QuoteTask", b =>
                 {
-                    b.Navigation("Jobs");
+                    b.HasOne("FinanceApp.Domain.Quote", "Quote")
+                        .WithMany("Tasks")
+                        .HasForeignKey("QuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quote");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Quote", b =>
                 {
-                    b.Navigation("Jobs");
+                    b.Navigation("Materials");
+
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

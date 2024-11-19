@@ -1,70 +1,93 @@
 namespace FinanceApp.Data;
 
+using System.Linq.Expressions;
 using FinanceApp.Domain;
+using FinanceApp.DTO;
 using Microsoft.EntityFrameworkCore;
-
 
 public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRepository
 {
     private readonly FinanceAppDbContext _financeAppDbContext = financeAppDbContext;
 
-    public async Task<IEnumerable<Quote>> AllQuotesAsync()
+    public async Task<IEnumerable<Quote>> ListQuotesAsync()
     {
-        return await _financeAppDbContext.Quotes.Include(q => q.Client).ToListAsync();
+        return await _financeAppDbContext.Quotes
+            .AsNoTracking()
+            .Include(q => q.Customer)
+            .ToListAsync();
     }
 
-    public async Task<PagedQuotes> PagedQuotes(int page, int pageSize, string search)
+    public async Task<PagedQuotes> PagedQuotes(int page, int pageSize, Expression<Func<Quote, bool>> filter)
     {
-        var query = _financeAppDbContext.Quotes.Include(q => q.Client).AsQueryable();
+        var filteredQuotes = _financeAppDbContext.Quotes.Include(q => q.Customer)
+                    .AsNoTracking()
+                    .AsQueryable().Where(filter);
+        var total = await filteredQuotes.CountAsync();
+        var quotes = await filteredQuotes.OrderByDescending(q => q.Id).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-        if (!string.IsNullOrEmpty(search))
+        var pagedQuotes = new PagedQuotes
         {
-            query = query.Where(q => q.QuoteRef.Contains(search) || q.QuoteTitle.Contains(search));
-        }
-
-        var dto = new PagedQuotes
-        {
-            Total = await query.CountAsync()
+            Total = total,
+            Quotes = quotes,
+            Page = page,
+            PageSize = pageSize
         };
 
-        dto.Quotes = await query
-            .OrderByDescending(q => q.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return dto;
+        return pagedQuotes;
     }
 
-    public async Task<Quote> GetQuoteAsync(int id)
+    public async Task<Quote> GetQuoteAsync(int id, bool includeRelated = false)
     {
-        var quote = await _financeAppDbContext.Quotes.Include(q => q.Client).FirstOrDefaultAsync(q => q.Id == id);
+        IQueryable<Quote> query = _financeAppDbContext.Quotes
+            .Include(q => q.Customer);
+
+        if (includeRelated)
+        {
+            query = query
+                .Include(q => q.Materials)
+                .Include(q => q.Tasks);
+        }
+
+        var quote = await query.FirstOrDefaultAsync(q => q.Id == id);
+
+        if (quote != null && includeRelated)
+        {
+            quote.Tasks = quote.Tasks.OrderBy(t => t.OrderIndex).ToList();
+        }
+
         return quote!;
     }
 
     public async Task<Quote> CreateQuoteAsync(Quote quote)
     {
         if (quote == null)
-        {
             throw new ArgumentNullException(nameof(quote), "Quote cannot be null");
-        }
 
-        try
-        {
-            _financeAppDbContext.Quotes.Add(quote);
-            await _financeAppDbContext.SaveChangesAsync();
-            quote.QuoteRef = quote.GenerateUniqueReference(quote.Id);
-            await _financeAppDbContext.SaveChangesAsync();
-            return quote;
-        }
-        catch (DbUpdateException dbEx)
-        {
-            throw new InvalidOperationException("An error occurred while saving the quote to the database.", dbEx);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while creating the quote.", ex);
-        }
+
+        await _financeAppDbContext.Quotes.AddAsync(quote);
+        return quote;
     }
 
+    public void UpdateQuoteAsync(Quote quote, Quote updatedData)
+    {
+        if (quote == null)
+            throw new ArgumentNullException(nameof(quote), "Quote cannot be null");
+
+        _financeAppDbContext.Entry(quote).CurrentValues.SetValues(updatedData);
+    }
+
+    public void RemoveTasks(IEnumerable<QuoteTask> tasks)
+    {
+        _financeAppDbContext.QuoteTasks.RemoveRange(tasks);
+    }
+
+    public void RemoveMaterials(IEnumerable<QuoteMaterial> materials)
+    {
+        _financeAppDbContext.QuoteMaterials.RemoveRange(materials);
+    }
+
+    public bool QuoteExists(int id)
+    {
+        return _financeAppDbContext.Quotes.Any(q => q.Id == id);
+    }
 }

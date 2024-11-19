@@ -1,12 +1,28 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FinanceApp.Domain;
-public class Job {
+
+public class Job
+{
+    [Key]
     public int Id { get; set;}
-    public int? QuoteId { get; set; }
+
+    [Required]
+    public required int QuoteId { get; set; }
+
+    [ForeignKey("QuoteId")]
     public Quote? Quote { get; set; }
-    public int? InvoiceId { get; set; }
-    public Invoice? Invoice { get; set; }
-    public string JobTitle { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public decimal EstimatedCost { get; set; }
-    public decimal ActualCost { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public required string Title { get; set; }
+
+    [Required]
+    public DateTime Start { get; set; }
+
+    [Required]
+    public DateTime End { get; set; }
+
+    public bool AllDay { get; set; } = false;
 }

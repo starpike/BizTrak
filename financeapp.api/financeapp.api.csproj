@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="mapster" Version="7.4.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,7 +24,7 @@
   </ItemGroup>
     <ItemGroup>
     <ProjectReference Include="..\FinanceApp.Services\FinanceApp.Services.csproj" />
-    <ProjectReference Include="..\FinanceApp.DTOs\FinanceApp.DTOs.csproj" />
+    <ProjectReference Include="..\FinanceApp.DTO\FinanceApp.DTO.csproj" />
   </ItemGroup>
 
 </Project>

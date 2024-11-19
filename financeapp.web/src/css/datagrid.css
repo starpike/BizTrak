@@ -1,6 +1,6 @@
 :root {
     --grid-header-bg-color: #eef2f7;
-    --grid-padding: 0.75em;
+    --grid-padding: 0.6em;
   }
 
 /* style.css */
@@ -27,6 +27,25 @@ thead th, tbody td {
 
 .responsive-table a {
     color: var(--default-font-color);
+}
+
+.ellipsis-button {
+    background-color: transparent;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 7px 3px 7px;
+    transition: background-color 0.3s, border 0.3s;
+    border: 1px solid transparent;
+}
+
+.ellipsis-button:hover, tr:hover .ellipsis-button {
+    background-color: rgb(238, 242, 247);
+    border: 1px solid #ddd;
 }
 
 /* Responsive styling */

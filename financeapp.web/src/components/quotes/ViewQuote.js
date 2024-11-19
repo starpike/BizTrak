@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/forms.css';
 
@@ -7,8 +6,6 @@ const ViewQuote = ({ onCancel, quoteId }) => {
     const [quoteTitle, setQuoteTitle] = useState('');
     const [clientName, setClientName] = useState('');
     const [quoteDate, setQuoteDate] = useState(null);
-    const [errors, setError] = useState([]);
-    const location = useLocation();
 
     useEffect(() => {
         const fetchQuote = async () => {
@@ -21,11 +18,10 @@ const ViewQuote = ({ onCancel, quoteId }) => {
                 setQuoteDate(formatDate(new Date(response.data.quoteDate)));
             } catch (error) {
                 console.error('Error fetching quote:', error);
-                setError('Failed to load quote');
             }
         };
         fetchQuote();
-    }, []);
+    }, [quoteId]);
 
     const formatDate = (date) => {
         const year = date.getFullYear();

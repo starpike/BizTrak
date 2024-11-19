@@ -8,12 +8,14 @@
   <ItemGroup>
     <ProjectReference Include="..\FinanceApp.Domain\FinanceApp.Domain.csproj" />
     <ProjectReference Include="..\FinanceApp.Data\FinanceApp.Data.csproj" />
-    <ProjectReference Include="..\FinanceApp.DTOs\FinanceApp.DTOs.csproj" />
+    <ProjectReference Include="..\FinanceApp.DTO\FinanceApp.DTO.csproj" />
   </ItemGroup>
   <ItemGroup>
+      <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+      <PackageReference Include="QuestPDF" Version="2024.10.2" />
   </ItemGroup>
 </Project>

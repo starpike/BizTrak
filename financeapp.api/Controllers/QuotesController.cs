@@ -1,67 +1,192 @@
 namespace FinanceApp.Api;
+
 using FinanceApp.Data;
-using FinanceApp.DTOs;
+using FinanceApp.DTO;
 using FinanceApp.Domain;
 using FinanceApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using FinanceApp.Domain.Extensions;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
 [ApiController]
-public class QuotesController(ILogger<QuotesController> logger, IQuoteService quoteService, IQuoteRepository quoteRepository) : ControllerBase
+public class QuotesController(ILogger<QuotesController> logger, IQuoteService quoteService, IUnitOfWork unitOfWork) : ControllerBase
 {
     private readonly ILogger<QuotesController> logger = logger;
     private readonly IQuoteService quoteService = quoteService;
-    private readonly IQuoteRepository quoteRepository = quoteRepository;
+    private readonly IUnitOfWork unitOfWork = unitOfWork;
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Quote>>> GetQuotes()
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetQuoteById(int id)
     {
-        var quotes = await quoteRepository.AllQuotesAsync();
-        return Ok(quotes);
+        var quote = await unitOfWork.Quotes.GetQuoteAsync(id, true);
+        return Ok(quote.ToDTO());
     }
 
     [HttpGet]
-    [Route("getquotebyid")]
-    public async Task<ActionResult<Quote>> GetQuoteById(int quoteId)
+    public async Task<IActionResult> ListQuotes([FromQuery] QuoteState? quoteState, int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string search = "")
     {
-        var quote = await quoteRepository.GetQuoteAsync(quoteId);
-        return Ok(quote);
-    }
+        var filter = QuoteFilterBuilder.BuildFilter(quoteState, search);
 
-    [HttpGet]
-    [Route("search")]
-    public async Task<IActionResult> GetQuotes([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string search = "")
-    {
-        var pagedQuotes = await quoteRepository.PagedQuotes(page, pageSize, search);
+        var pagedQuotes = await unitOfWork.Quotes.PagedQuotes(page, pageSize, filter);
 
-        var response = new
+        var dto = new PagedQuotesDTO
         {
-            Data = pagedQuotes.Quotes,
-            TotalCount = pagedQuotes.Total,
-            Page = page,
-            PageSize = pageSize
+            Total = pagedQuotes.Total,
+            Quotes = pagedQuotes.Quotes.ToDTOList(),
+            Page = pagedQuotes.Page,
+            PageSize = pagedQuotes.PageSize
         };
 
-        return Ok(response);
+        return Ok(dto);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateQuote([FromBody] QuoteDTO quote)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
         try
         {
-            var createdQuote = await quoteService.CreateQuoteAsync(quote);
+            var newQuote = await quoteService.CreateQuoteAsync(quote);
             logger.LogInformation("Quote created successfully.");
-            return CreatedAtAction(nameof(CreateQuote), new { id = createdQuote.Id }, createdQuote);
+            return CreatedAtAction(nameof(CreateQuote), new { id = newQuote.Id }, newQuote);
         }
-        catch (ValidationException ex) {
+        catch (ValidationException ex)
+        {
             logger.LogError(ex, "Validation error occurred while creating the quote.");
             return BadRequest(ex.Errors);
         }
-        catch (Exception ex)
+        catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Error occurred while creating the quote.");
-            return StatusCode(500, "Internal server error");
+            logger.LogError(ex, "A database error occurred while creating the quote.");
+            return StatusCode(500, "A database error occurred. Please try again later.");
         }
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateQuote(int id, [FromBody] QuoteDTO quoteDTO)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        try
+        {
+            var newQuote = await quoteService.UpdateQuoteAsync(id, quoteDTO);
+            logger.LogInformation("Quote updated successfully.");
+            return NoContent();
+
+        }
+        catch (ValidationException ex)
+        {
+            logger.LogError(ex, "Validation error occurred while creating the quote.");
+            return BadRequest(ex.Errors);
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "A database error occurred while updating the quote.");
+            return StatusCode(500, "A database error occurred. Please try again later.");
+        }
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchQuote(int id, [FromBody] JsonPatchDocument<Quote> patchDocument)
+    {
+        if (patchDocument == null)
+            return BadRequest();
+
+        var quote = await unitOfWork.Quotes.GetQuoteAsync(id);
+
+        if (quote == null)
+            return NotFound();
+
+        patchDocument.ApplyTo(quote, ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            await unitOfWork.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException) when (!unitOfWork.Quotes.QuoteExists(id))
+        {
+            return NotFound();
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "A database error occurred while updating the quote.");
+            return StatusCode(500, "A database error occurred. Please try again later.");
+        }
+
+        return NoContent();
+    }
+
+    [HttpPost("{quoteId}/send")]
+    public async Task<IActionResult> SendQuote(int quoteId)
+    {
+        try
+        {
+            var result = await quoteService.UpdateQuoteStatusAsync(quoteId, Trigger.Send);
+
+            if (!result)
+                return NotFound($"Quote with ID {quoteId} not found.");
+
+            return Ok(new { Message = "Quote status updated successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { Error = ex.Message });
+        }
+    }
+
+    [HttpPost("{quoteId}/accept")]
+    public async Task<IActionResult> AcceptQuote(int quoteId)
+    {
+        try
+        {
+            var result = await quoteService.UpdateQuoteStatusAsync(quoteId, Trigger.Accept);
+
+            if (!result)
+                return NotFound($"Quote with ID {quoteId} not found.");
+
+            return Ok(new { Message = "Quote status updated successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { Error = ex.Message });
+        }
+    }
+
+    [HttpPost("{quoteId}/reject")]
+    public async Task<IActionResult> RejectQuote(int quoteId)
+    {
+        try
+        {
+            var result = await quoteService.UpdateQuoteStatusAsync(quoteId, Trigger.Reject);
+
+            if (!result)
+                return NotFound($"Quote with ID {quoteId} not found.");
+
+            return Ok(new { Message = "Quote status updated successfully." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { Error = ex.Message });
+        }
+    }
+
+    [HttpGet("{id}/pdf")]
+    public async Task<IActionResult> GetQuotePdf(int id)
+    {
+        var quote = await unitOfWork.Quotes.GetQuoteAsync(id, true);
+
+        if (quote == null)
+            return NotFound();
+
+        var pdfBytes = QuotePdfGenerator.GenerateQuotePdf(quote);
+        Response.Headers.Append("Content-Disposition", "inline; $filename={quote.QuoteRef}.pdf");
+        return File(pdfBytes, "application/pdf");
+    }
 }
+

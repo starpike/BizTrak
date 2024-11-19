@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ClientLookup from '../clients/ClientLookup'; // Import the popup component
 import '../../css/forms.css';
-import { Actions } from '../utilities/constants.js'
+import PropTypes from 'prop-types';
+
 
 const AddQuoteForm = ({ onSave, onCancel }) => {
     const [quoteTitle, setQuoteTitle] = useState('');
@@ -12,9 +12,6 @@ const AddQuoteForm = ({ onSave, onCancel }) => {
     const [quoteDate, setQuoteDate] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [errors, setErrors] = useState([]);
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const quoteId = queryParams.get('quoteId');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -32,6 +29,11 @@ const AddQuoteForm = ({ onSave, onCancel }) => {
             }
         }
     };
+
+    AddQuoteForm.propTypes = {
+        onSave: PropTypes.func.isRequired,
+        onCancel: PropTypes.func.isRequired
+      }
 
     useEffect(() => {
         if (showPopup) {

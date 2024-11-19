@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Stateless" Version="5.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinanceApp.DTO\FinanceApp.DTO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities/" />
+    <Folder Include="Events/" />
+  </ItemGroup>
+
 </Project>

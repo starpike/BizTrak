@@ -1,11 +1,10 @@
-namespace FinanceApp.Data;
-
-using System.Threading.Tasks;
+using System;
 using FinanceApp.Domain;
 
+namespace FinanceApp.Data;
 
-public interface IJobRepository {
-    public Task<IEnumerable<Job>> AllJobsAsync();
-    public Task<Job> GetJobAsync(int id);
-
+public interface IJobRepository
+{
+    Task<Job> CreateJob(Job newJob);
+    Task<IEnumerable<Job>> ListJobs(DateTime start, DateTime end);
 }

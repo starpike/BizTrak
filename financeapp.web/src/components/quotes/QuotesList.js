@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import NavigationLink from '../NavigationLink';
 import Pagination from '../Pagination'
+import { formatDate } from '../utilities/formatting';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 function QuotesList({ onAdd, onSelect }) {
     const [quotes, setQuotes] = useState([]);
     const [error, setError] = useState(null);
     const [totalCount, setTotalCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize] = useState(10);
     const [search, setSearch] = useState('');
 
     useEffect(() => {
@@ -18,8 +18,8 @@ function QuotesList({ onAdd, onSelect }) {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/quotes/search`, {
                     params: { page, pageSize, search }
                 });
-                setQuotes(response.data.data);
-                setTotalCount(response.data.totalCount);
+                setQuotes(response.data.quotes);
+                setTotalCount(response.data.total);
             } catch (error) {
                 console.error('Error fetching quotes:', error);
                 setError('Failed to load quotes');
@@ -33,16 +33,16 @@ function QuotesList({ onAdd, onSelect }) {
     }
 
     const handleSearchChange = (event) => {
-        if (event.target.value.length === 0 ||event.target.value.length > 1) {
+        if (event.target.value.length === 0 || event.target.value.length > 1) {
             setSearch(event.target.value);
             setPage(1);
         }
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-    };
+    QuotesList.propTypes = {
+        onAdd: PropTypes.func.isRequired,
+        onSelect: PropTypes.func.isRequired
+      }
 
     return (
         <div className="card card-flush">
@@ -57,11 +57,13 @@ function QuotesList({ onAdd, onSelect }) {
                 <table className="responsive-table">
                     <thead>
                         <tr>
-                            <th>Quote Ref</th>
-                            <th>Quote Title</th>
-                            <th>Client Name</th>
-                            <th>Client Address</th>
+                            <th>Ref</th>
+                            <th>Title</th>
+                            <th>Name</th>
+                            <th>Address</th>
                             <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,6 +74,16 @@ function QuotesList({ onAdd, onSelect }) {
                                 <td data-label="Client Name:">{quote.client.firstName + ' ' + quote.client.lastName}</td>
                                 <td data-label="Client Address:">{quote.client.addressLine1}</td>
                                 <td data-label="Date:">{formatDate(quote.quoteDate)}</td>
+                                <td data-label="Status:">{quote.statusName}</td>
+                                <td data-label="Action:">
+                                    <button className="ellipsis-button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="5" cy="12" r="2" fill="black" />
+                                            <circle cx="12" cy="12" r="2" fill="black" />
+                                            <circle cx="19" cy="12" r="2" fill="black" />
+                                        </svg>
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

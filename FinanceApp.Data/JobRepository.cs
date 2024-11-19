@@ -1,20 +1,28 @@
-namespace FinanceApp.Data;
-
+using System;
 using FinanceApp.Domain;
 using Microsoft.EntityFrameworkCore;
 
+namespace FinanceApp.Data;
+
 public class JobRepository(FinanceAppDbContext financeAppDbContext) : IJobRepository
 {
-    private readonly FinanceAppDbContext _financeAppDbContext = financeAppDbContext;
+    private readonly FinanceAppDbContext financeAppDbContext = financeAppDbContext;
 
-    public async Task<IEnumerable<Job>> AllJobsAsync()
+    public async Task<Job> CreateJob(Job newJob)
     {
-        return await _financeAppDbContext.Jobs.ToListAsync();
+        if (newJob == null)
+            throw new ArgumentNullException(nameof(newJob), "Job cannot be null");
+
+
+        await financeAppDbContext.Jobs.AddAsync(newJob);
+        return newJob;    
     }
 
-    public async Task<Job> GetJobAsync(int id)
+    public async Task<IEnumerable<Job>> ListJobs(DateTime start, DateTime end)
     {
-        var job =  await _financeAppDbContext.Jobs.FindAsync(id);
-        return job!;
+        return await financeAppDbContext.Jobs
+            .AsNoTracking()
+            .Where(j => j.Start < end && j.End > start)
+            .ToListAsync();
     }
 }
