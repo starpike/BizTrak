@@ -1,5 +1,5 @@
 using FinanceApp.Data;
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceApp.Api.Controllers
@@ -10,24 +10,24 @@ namespace FinanceApp.Api.Controllers
     {
         private readonly IQuoteTaskRepository _quoteTaskRepository = quoteTaskRepository;
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<QuoteTask>>> ListTasks()
-        {
-            var tasks = await _quoteTaskRepository.ListTasksAsync();
-             return Ok(tasks);
-        }
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<QuoteTask>>> ListTasks()
+        // {
+        //     var tasks = await _quoteTaskRepository.ListTasksAsync();
+        //      return Ok(tasks);
+        // }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<QuoteTask>> GetTask(int id)
-        {
-            var task = await _quoteTaskRepository.GetTaskAsync(id);
+        // [HttpGet("{id}")]
+        // public async Task<ActionResult<QuoteTask>> GetTask(int id)
+        // {
+        //     var task = await _quoteTaskRepository.GetTaskAsync(id);
 
-            if (task == null)
-            {
-                return NotFound();
-            }
+        //     if (task == null)
+        //     {
+        //         return NotFound();
+        //     }
 
-            return task;
-        }
+        //     return task;
+        // }
     }
 }

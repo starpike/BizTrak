@@ -1,7 +1,7 @@
 namespace FinanceApp.Data;
 
 using System.Linq.Expressions;
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 using FinanceApp.DTO;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,7 +58,7 @@ public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRe
         return quote!;
     }
 
-    public async Task<Quote> CreateQuoteAsync(Quote quote)
+    public async Task<Quote> AddAsync(Quote quote)
     {
         if (quote == null)
             throw new ArgumentNullException(nameof(quote), "Quote cannot be null");
@@ -68,7 +68,7 @@ public class QuoteRepository(FinanceAppDbContext financeAppDbContext) : IQuoteRe
         return quote;
     }
 
-    public void UpdateQuoteAsync(Quote quote, Quote updatedData)
+    public void UpdateAsync(Quote quote, Quote updatedData)
     {
         if (quote == null)
             throw new ArgumentNullException(nameof(quote), "Quote cannot be null");

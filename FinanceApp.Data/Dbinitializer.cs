@@ -1,4 +1,4 @@
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 
 namespace FinanceApp.Data;
 

@@ -1,4 +1,5 @@
 using System;
+using FinanceApp.Domain.Entities;
 using FinanceApp.DTO;
 
 namespace FinanceApp.Domain.Extensions;

@@ -7,14 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="QuestPDF" Version="2024.10.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EventHandlers/" />
-    <Folder Include="Services/" />
-    <Folder Include="Validation/" />
+    <ProjectReference Include="..\FinanceApp.Data\FinanceApp.Data.csproj" />
+    <ProjectReference Include="..\FinanceApp.Domain\FinanceApp.Domain.csproj" />
+    <ProjectReference Include="..\FinanceApp.DTO\FinanceApp.DTO.csproj" />
   </ItemGroup>
 
 </Project>

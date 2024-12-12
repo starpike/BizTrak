@@ -9,9 +9,11 @@ public class UnitOfWork : IUnitOfWork
     private IQuoteRepository? _quoteRepository;
     private ICustomerRepository? _customersRepository;
     private IJobRepository? _jobsRepository;
+    private IUserRepository? _usersRepository;
     public IQuoteRepository Quotes => _quoteRepository ??= new QuoteRepository(_context);
     public ICustomerRepository Customers => _customersRepository ??= new CustomerRepository(_context);
-    public IJobRepository Jobs => _jobsRepository ??= new JobRepository(_context);   
+    public IJobRepository Jobs => _jobsRepository ??= new JobRepository(_context);
+    public IUserRepository Users => _usersRepository ??= new UserRepository(_context);
 
     public UnitOfWork(FinanceAppDbContext context)
     {

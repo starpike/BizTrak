@@ -2,12 +2,13 @@ namespace FinanceApp.Api;
 
 using FinanceApp.Data;
 using FinanceApp.DTO;
-using FinanceApp.Domain;
-using FinanceApp.Services;
+using FinanceApp.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using FinanceApp.Domain.Extensions;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using FinanceApp.Application.Services;
+using Mapster;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -47,22 +48,10 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        try
-        {
-            var newQuote = await quoteService.CreateQuoteAsync(quote);
-            logger.LogInformation("Quote created successfully.");
-            return CreatedAtAction(nameof(CreateQuote), new { id = newQuote.Id }, newQuote);
-        }
-        catch (ValidationException ex)
-        {
-            logger.LogError(ex, "Validation error occurred while creating the quote.");
-            return BadRequest(ex.Errors);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "A database error occurred while creating the quote.");
-            return StatusCode(500, "A database error occurred. Please try again later.");
-        }
+        var newQuote = await quoteService.CreateQuoteAsync(quote);
+        logger.LogInformation("Quote created successfully.");
+        return CreatedAtAction(nameof(CreateQuote), new { id = newQuote.Id }, newQuote);
+
     }
 
     [HttpPut("{id}")]
@@ -70,27 +59,14 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        try
-        {
-            var newQuote = await quoteService.UpdateQuoteAsync(id, quoteDTO);
-            logger.LogInformation("Quote updated successfully.");
-            return NoContent();
+        await quoteService.UpdateQuoteAsync(id, quoteDTO);
+        logger.LogInformation("Quote updated successfully.");
+        return NoContent();
 
-        }
-        catch (ValidationException ex)
-        {
-            logger.LogError(ex, "Validation error occurred while creating the quote.");
-            return BadRequest(ex.Errors);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "A database error occurred while updating the quote.");
-            return StatusCode(500, "A database error occurred. Please try again later.");
-        }
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> PatchQuote(int id, [FromBody] JsonPatchDocument<Quote> patchDocument)
+    public async Task<IActionResult> PatchQuote(int id, [FromBody] JsonPatchDocument<QuoteDTO> patchDocument)
     {
         if (patchDocument == null)
             return BadRequest();
@@ -100,10 +76,14 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
         if (quote == null)
             return NotFound();
 
-        patchDocument.ApplyTo(quote, ModelState);
+        var quoteDTO = quote.Adapt<QuoteDTO>();
+
+        patchDocument.ApplyTo(quoteDTO, ModelState);
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        quoteDTO.Adapt(quote);
 
         try
         {
@@ -155,6 +135,11 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
         catch (InvalidOperationException ex)
         {
             return Conflict(new { Error = ex.Message });
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "A database error occurred while updating the quote status.");
+            return StatusCode(500, "A database error occurred. Please try again later.");
         }
     }
 

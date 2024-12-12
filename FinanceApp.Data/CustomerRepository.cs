@@ -2,7 +2,7 @@ namespace FinanceApp.Data;
 
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 
 public class CustomerRepository : ICustomerRepository
 {
@@ -19,7 +19,7 @@ public class CustomerRepository : ICustomerRepository
         return customer!;
     }
 
-    public async Task CreateAsync(Customer customer)
+    public async Task AddAsync(Customer customer)
     {
         if (customer == null)
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");

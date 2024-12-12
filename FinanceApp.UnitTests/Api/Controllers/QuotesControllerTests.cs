@@ -1,11 +1,12 @@
 using FinanceApp.Api;
 using FinanceApp.Data;
 using FinanceApp.DTO;
-using FinanceApp.Domain;
-using FinanceApp.Services;
+using FinanceApp.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using FinanceApp.Application.Services;
+using FinanceApp.Application.Validation;
 
 namespace FinanceApp.UnitTests.Api.Controllers
 {

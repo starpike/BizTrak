@@ -22,7 +22,7 @@ namespace FinanceApp.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FinanceApp.Domain.Customer", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace FinanceApp.Data.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Job", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Job", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,11 +61,22 @@ namespace FinanceApp.Data.Migrations
                     b.Property<bool>("AllDay")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("End")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsScheduled")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("QuoteId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("QuoteRef")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("Start")
                         .HasColumnType("timestamp with time zone");
@@ -83,7 +94,7 @@ namespace FinanceApp.Data.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Quote", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Quote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,7 +139,7 @@ namespace FinanceApp.Data.Migrations
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.QuoteMaterial", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.QuoteMaterial", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,7 +168,7 @@ namespace FinanceApp.Data.Migrations
                     b.ToTable("QuoteMaterials");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.QuoteTask", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.QuoteTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -189,20 +200,73 @@ namespace FinanceApp.Data.Migrations
                     b.ToTable("QuoteTasks");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Job", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Role", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Quote", "Quote")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Job", b =>
+                {
+                    b.HasOne("FinanceApp.Domain.Entities.Quote", "Quote")
                         .WithOne()
-                        .HasForeignKey("FinanceApp.Domain.Job", "QuoteId")
+                        .HasForeignKey("FinanceApp.Domain.Entities.Job", "QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Quote", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Quote", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Customer", "Customer")
+                    b.HasOne("FinanceApp.Domain.Entities.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -211,9 +275,9 @@ namespace FinanceApp.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.QuoteMaterial", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.QuoteMaterial", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Quote", "Quote")
+                    b.HasOne("FinanceApp.Domain.Entities.Quote", "Quote")
                         .WithMany("Materials")
                         .HasForeignKey("QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -222,9 +286,9 @@ namespace FinanceApp.Data.Migrations
                     b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.QuoteTask", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.QuoteTask", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Quote", "Quote")
+                    b.HasOne("FinanceApp.Domain.Entities.Quote", "Quote")
                         .WithMany("Tasks")
                         .HasForeignKey("QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -233,11 +297,40 @@ namespace FinanceApp.Data.Migrations
                     b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Quote", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("FinanceApp.Domain.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Quote", b =>
                 {
                     b.Navigation("Materials");
 
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

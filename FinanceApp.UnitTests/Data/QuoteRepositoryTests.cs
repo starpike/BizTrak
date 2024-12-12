@@ -1,5 +1,5 @@
 using FinanceApp.Data;
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -56,7 +56,7 @@ public class QuoteRepositoryTests
         var quote = new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 };
 
         // Act
-        await _repository.CreateQuoteAsync(quote);
+        await _repository.AddAsync(quote);
 
         // Assert
         _mockSet.Verify(m => m.AddAsync(quote, default), Times.Once);
@@ -70,7 +70,7 @@ public class QuoteRepositoryTests
         var quote = new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 };
 
         // Act
-        _repository.UpdateQuoteAsync(quote, quote);
+        _repository.UpdateAsync(quote, quote);
 
         // Assert
         _mockSet.Verify(m => m.Update(quote), Times.Once);

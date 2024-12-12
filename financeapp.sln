@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp.Data", "FinanceA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp.Domain", "FinanceApp.Domain\FinanceApp.Domain.csproj", "{D1792681-80B7-430A-8804-BB9ABF0531D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp.Services", "FinanceApp.Services\FinanceApp.Services.csproj", "{09EA28E3-5F77-4D99-AB3D-86CDA06C09C3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp.UnitTests", "FinanceApp.UnitTests\FinanceApp.UnitTests.csproj", "{66767502-90FD-4178-B11B-DF1F7C90B862}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceApp.DTO", "FinanceApp.DTO\FinanceApp.DTO.csproj", "{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}"
@@ -35,10 +33,6 @@ Global
 		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09EA28E3-5F77-4D99-AB3D-86CDA06C09C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09EA28E3-5F77-4D99-AB3D-86CDA06C09C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09EA28E3-5F77-4D99-AB3D-86CDA06C09C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09EA28E3-5F77-4D99-AB3D-86CDA06C09C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66767502-90FD-4178-B11B-DF1F7C90B862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66767502-90FD-4178-B11B-DF1F7C90B862}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66767502-90FD-4178-B11B-DF1F7C90B862}.Release|Any CPU.ActiveCfg = Release|Any CPU

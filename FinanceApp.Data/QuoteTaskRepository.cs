@@ -1,6 +1,6 @@
 namespace FinanceApp.Data;
 
-using FinanceApp.Domain;
+using FinanceApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 public class QuoteTaskRepository(FinanceAppDbContext financeAppDbContext) : IQuoteTaskRepository
