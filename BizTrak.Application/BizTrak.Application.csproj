@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="QuestPDF" Version="2024.10.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BizTrak.Data\BizTrak.Data.csproj" />
+    <ProjectReference Include="..\BizTrak.Domain\BizTrak.Domain.csproj" />
+    <ProjectReference Include="..\BizTrak.DTO\BizTrak.DTO.csproj" />
+  </ItemGroup>
+
+</Project>

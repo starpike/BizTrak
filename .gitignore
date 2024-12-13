@@ -14,7 +14,6 @@ build/
 
 # Environment settings
 .env
-appsettings*.json
 
 # IDE settings
 .vs/

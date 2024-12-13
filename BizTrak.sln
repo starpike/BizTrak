@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizTrak.Api", "BizTrak.Api\BizTrak.Api.csproj", "{76635FD7-496E-49CE-B000-096034CA64B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizTrak.Data", "BizTrak.Data\BizTrak.Data.csproj", "{A1BC5241-7DA2-469D-8259-FB61E17A7CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizTrak.Domain", "BizTrak.Domain\BizTrak.Domain.csproj", "{D1792681-80B7-430A-8804-BB9ABF0531D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizTrak.UnitTests", "BizTrak.UnitTests\BizTrak.UnitTests.csproj", "{66767502-90FD-4178-B11B-DF1F7C90B862}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizTrak.DTO", "BizTrak.DTO\BizTrak.DTO.csproj", "{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizTrak.Application", "BizTrak.Application\BizTrak.Application.csproj", "{3B40035C-434F-4E3E-B78A-25C749009014}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76635FD7-496E-49CE-B000-096034CA64B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76635FD7-496E-49CE-B000-096034CA64B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76635FD7-496E-49CE-B000-096034CA64B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76635FD7-496E-49CE-B000-096034CA64B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1BC5241-7DA2-469D-8259-FB61E17A7CF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1BC5241-7DA2-469D-8259-FB61E17A7CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1BC5241-7DA2-469D-8259-FB61E17A7CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1BC5241-7DA2-469D-8259-FB61E17A7CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1792681-80B7-430A-8804-BB9ABF0531D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66767502-90FD-4178-B11B-DF1F7C90B862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66767502-90FD-4178-B11B-DF1F7C90B862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66767502-90FD-4178-B11B-DF1F7C90B862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66767502-90FD-4178-B11B-DF1F7C90B862}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC56D34C-E8C9-4CF0-B4C3-2CBB66A5A1DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B40035C-434F-4E3E-B78A-25C749009014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B40035C-434F-4E3E-B78A-25C749009014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B40035C-434F-4E3E-B78A-25C749009014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B40035C-434F-4E3E-B78A-25C749009014}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {57B52064-EEA3-450A-9E00-D4A7D57A5222}
+	EndGlobalSection
+EndGlobal
