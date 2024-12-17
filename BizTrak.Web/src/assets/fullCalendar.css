@@ -1,0 +1,84 @@
+:root {
+    --fc-button-bg-color: var(--dark-blue-l1);
+    --fc-button-active-bg-color: var(--dark-blue-l2);
+    --fc-button-border-color: var(--dark-blue-l1);
+    --fc-button-active-border-color: var(--dark-blue-l2);
+    --fc-button-hover-border-color: var(--dark-blue-l2);
+    --fc-button-hover-bg-color: var(--dark-blue-l2);
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--dark-blue-l2);
+}
+
+.fc-daygrid-day-number {
+    color: var(--dark-blue-l2);
+}
+
+.calendar-container {
+    max-width: 1000px; /* Set the maximum width to make the calendar smaller */
+    margin: 0 auto; /* Center the calendar */
+  }
+
+.fc .fc-toolbar-title {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: var(--dark-blue-l2);
+
+}
+
+.fc-today-button {
+    margin: 0px !important;
+}
+
+.fc-button-group {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.fc-toolbar .fc-button-group {
+    margin: 0.5em !important; /* Remove extra margin around grouped buttons */
+}
+
+.fc-daygrid-event .fc-event-title {
+    color: #fff;
+}
+
+.fc-daygrid-event .fc-event-time {
+    color: #fff;
+}
+
+.fc-daygrid-event-dot {
+    border-color: #fff !important;
+}
+
+.fc-daygrid-event {
+    background-color: var(--dark-blue-l3);
+}
+
+.fc-daygrid-event:hover {
+    background-color: var(--dark-blue-l5);
+}
+
+@media (max-width: 600px) {
+    .fc-toolbar {
+        flex-direction: column; /* Stack chunks vertically */
+        align-items: center; /* Center-align the buttons */
+    }
+
+    .fc-toolbar .fc-toolbar-chunk {
+        width: 100%; /* Make chunks take full width */
+        text-align: center;
+        margin-bottom: 0.5em; /* Add space between chunks */
+    }
+
+    .fc-toolbar .fc-button {
+        width: auto;
+        padding: 0.5em; /* Make buttons more compact */
+    }
+
+    .fc-today-button {
+        margin-right: 5px !important;
+    }
+}
+

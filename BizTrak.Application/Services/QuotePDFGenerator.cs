@@ -31,8 +31,8 @@ public class QuotePdfGenerator
                     column.Item().PaddingVertical(5).Text("");
 
                     // Quote Reference
-                    column.Item().Text($"Quote Ref: {quote.QuoteRef}").FontSize(14).Bold();
-                    column.Item().PaddingBottom(20).Text($"Quote for: {quote.Title}").FontSize(14);
+                    column.Item().Text($"Quote Ref: {quote.QuoteRef.Replace("QUO", "QUO")}").FontSize(14).Bold();
+                    column.Item().PaddingBottom(20).Text($"For: {quote.Title}").FontSize(14);
 
                     column.Item().Text("Stuart Kinlochan").FontSize(14);
                     column.Item().Text("07958 750605").FontSize(14);

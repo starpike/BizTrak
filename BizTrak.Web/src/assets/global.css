@@ -1,0 +1,168 @@
+:root {
+    --bulma-dark-h: 209;
+    --bulma-dark-s: 100%;
+    --bulma-dark-l: 20%;
+    --bulma-dark-l1: 25%;
+    --bulma-dark-l2: 30%;
+    --bulma-dark-l3: 35%;
+    --bulma-dark-l4: 40%;
+    --bulma-dark-l5: 40%;
+    --bulma-dark-l6: 40%;
+    --dark-blue: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l));
+    --dark-blue-l1: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l1));
+    --dark-blue-l2: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l2));
+    --dark-blue-l3: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l3));
+    --dark-blue-l4: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l4));
+    --dark-blue-l5: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l5));
+    --dark-blue-l6: hsl(var(--bulma-dark-h), var(--bulma-dark-s), var(--bulma-dark-l6));
+}
+
+.footer {
+    padding: 0;
+}
+
+.is-header {
+    background-color: var(--dark-blue-l1);
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+}
+
+.brand-bar {
+    background-color: var(--dark-blue);
+    color: #fff;
+}
+
+.navbar-menu {
+    background-color: var(--dark-blue);
+}
+
+.navbar-item {
+    background-color: var(--dark-blue);
+    color: #fff;
+    gap: 0em;
+}
+
+a.navbar-item {
+    background-color: var(--dark-blue);
+}
+
+a:hover.navbar-item {
+    background-color: var(--dark-blue-l1);
+}
+
+.navbar-item svg {
+    padding-right: 8px;
+}
+
+.custom-box {
+    padding: 0rem !important;
+}
+
+.ptlr-5 {
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.has-border-bottom {
+    border-bottom: 1px solid #ddd;
+}
+
+.has-border-top {
+    border-top: 1px solid #ddd;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.inline-container {
+    display: inline-block;
+}
+
+.section-center {
+    display: flex;
+    justify-content: center;
+}
+
+.has-text-underline {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .responsive-table thead {
+        display: none;
+        /* Hide the header row at small screen sizes */
+    }
+
+    .responsive-table,
+    .responsive-table tbody,
+    .responsive-table tr,
+    .responsive-table td {
+        display: block;
+        width: 100%;
+        min-width: 320px !important;
+    }
+
+    .responsive-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .responsive-table td {
+        padding-left: 40% !important;
+        position: relative;
+        padding-top: 0px !important;
+        box-sizing: border-box;
+        border: 0;
+        text-align: left !important;
+        overflow-wrap: break-word;
+    }
+
+    .responsive-table td:first-child {
+        padding-top: 10px !important;
+    }
+
+    .responsive-table td:last-child {
+        padding-right: 4px !important;
+    }
+
+    .responsive-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .responsive-table tbody tr:last-child {
+        margin-bottom: 0px;
+    }
+
+    .responsive-table tfoot tr {
+        border: 0;
+    }
+
+    .responsive-table tfoot tr td {
+        padding: 0px !important;
+    }
+
+    .responsive-table .nowrap {
+        white-space: nowrap;
+    }
+
+    .responsive-table .empty {
+        padding-left: 10px !important;
+    }
+
+    .responsive-table .list-controls {
+        text-align: right !important;
+    }
+}

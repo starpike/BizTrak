@@ -1,0 +1,35 @@
+*** DOTNET COMMANDS ***
+
+dotnet build
+dotnet run
+
+dotnet new classlib -o FinanceApp.Services
+dotnet new webapi -n myapp.api
+dotnet add FinanceApp.UnitTests/FinanceApp.UnitTests.csproj reference FinanceApp.Api/FinanceApp.Api.csproj
+dotnet sln add FinanceApp.Services/FinanceApp.Services.csproj
+
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet remove package jquery
+
+*** CREATE XUNIT TESTS PROJECT ***
+dotnet new xunit -n FinanceApp.UnitTests
+dotnet add FinanceApp.UnitTests/FinanceApp.UnitTests.csproj reference FinanceApp.Api/FinanceApp.Api.csproj
+dotnet sln add FinanceApp.UnitTests/FinanceApp.UnitTests.csproj
+
+
+*** ENTITY FRAMWORK COMMANDS ***
+
+dotnet ef migrations add CreateTables1  --project FinanceApp.Data --startup-project FinanceApp.Api
+dotnet ef database update --project FinanceApp.Data --startup-project FinanceApp.Api
+
+*** REACT/NPM CONFIGURATION ***
+
+Adding an empty jest.config.json file into the root of the web project ensures any 
+jest tests run when the project is opened and show in test explorer
+
+npm test --
+npm start
+npm install @testing-library/jest-dom --save-dev
