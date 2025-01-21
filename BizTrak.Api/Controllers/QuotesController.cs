@@ -22,6 +22,10 @@ public class QuotesController(ILogger<QuotesController> logger, IQuoteService qu
     public async Task<IActionResult> GetQuoteById(int id)
     {
         var quote = await unitOfWork.Quotes.GetQuoteAsync(id, true);
+
+        if (quote is null)
+            return NotFound($"Quote with ID {id} not found.");
+
         return Ok(quote.ToDTO());
     }
 

@@ -2,7 +2,6 @@ namespace BizTrak.Data;
 
 using System.Linq.Expressions;
 using BizTrak.Domain.Entities;
-using BizTrak.DTO;
 using Microsoft.EntityFrameworkCore;
 
 public class QuoteRepository(BizTrakDbContext BizTrakDbContext) : IQuoteRepository

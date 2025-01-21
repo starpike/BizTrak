@@ -32,9 +32,7 @@ public class CustomerValidationService : ICustomerValidationsService
         else if (customer.Address.Length > 250)
             errors.Add(new ValidationError("Address", "Customer address cannot be longer than 250 characters"));
 
-        if (string.IsNullOrWhiteSpace(customer.Email))
-            errors.Add(new ValidationError("Email", "Customer email cannot be empty"));
-        else if (!Regex.IsMatch(customer.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+        if (!string.IsNullOrWhiteSpace(customer.Email) &&  !Regex.IsMatch(customer.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             errors.Add(new ValidationError("Email", "Invalid email format"));
 
         if (!string.IsNullOrWhiteSpace(customer.Phone) && !Regex.IsMatch(customer.Phone, @"^\+?\d{10,15}$"))

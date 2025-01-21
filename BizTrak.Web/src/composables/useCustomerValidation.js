@@ -17,11 +17,9 @@ export default function useCustomerValidation() {
             maxLength: maxLength(250)
         },
         email: {
-            required: helpers.withMessage('email cannot be empty', required),
             email
         },
         phone: {
-            required: helpers.withMessage('phone cannot be empty', required),
             phone
         }
     }

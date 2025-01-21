@@ -13,9 +13,9 @@ namespace BizTrak.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class JobsController(ILogger<QuotesController> logger, IUnitOfWork unitOfWork, IJobValidationService jobValidationService) : ControllerBase
+public class JobsController(ILogger<JobsController> logger, IUnitOfWork unitOfWork, IJobValidationService jobValidationService) : ControllerBase
 {
-    private readonly ILogger<QuotesController> logger = logger;
+    private readonly ILogger<JobsController> logger = logger;
     private readonly IUnitOfWork unitOfWork = unitOfWork;
     private readonly IJobValidationService jobValidationService = jobValidationService;
 

@@ -16,7 +16,7 @@
         <div class="panel-block">
             <p><strong>Address:</strong></p>
             <div class="control">
-                <input type="text" id="name-address" class="input" v-model="customer.address"
+                <input type="text" id="address-input" class="input" v-model="customer.address"
                     :class="{ 'is-danger': v.address.$error }">
             </div>
             <p v-if="v.address.$errors.length" class="help is-danger">
@@ -28,7 +28,7 @@
         <div class="panel-block">
             <p><strong>Email:</strong></p>
             <div class="control">
-                <input type="email" id="name-email" class="input" v-model="customer.email"
+                <input type="email" id="email-input" class="input" v-model="customer.email"
                     :class="{ 'is-danger': v.email.$error }">
             </div>
             <p v-if="v.email.$errors.length" class="help is-danger">
@@ -40,7 +40,7 @@
         <div class="panel-block">
             <p><strong>Phone:</strong></p>
             <div class="control">
-                <input type="tel" id="name-phone" class="input" v-model="customer.phone"
+                <input type="tel" id="phone-input" class="input" v-model="customer.phone"
                     :class="{ 'is-danger': v.phone.$error }">
             </div>
             <p v-if="v.phone.$errors.length" class="help is-danger">
@@ -54,7 +54,7 @@
             <div class="buttons">
                 <router-link :to="{ name: 'customer-list' }" class="button">
                     < Back</router-link>
-                        <button class="button" @click="submitForm">Save</button>
+                        <button class="button" id="submit-button" @click="submitForm">Save</button>
             </div>
         </div>
     </div>
@@ -111,6 +111,7 @@ export default {
         };
 
         const submitForm = async () => {
+            debugger
             try {
                 v.value.$touch();
                 if (v.value.$invalid) return console.error('Please correct validation errors before submitting.');

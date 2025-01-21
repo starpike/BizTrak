@@ -23,7 +23,7 @@ dotnet sln add FinanceApp.UnitTests/FinanceApp.UnitTests.csproj
 *** ENTITY FRAMWORK COMMANDS ***
 
 dotnet ef migrations add CreateTables1  --project FinanceApp.Data --startup-project FinanceApp.Api
-dotnet ef database update --project FinanceApp.Data --startup-project FinanceApp.Api
+dotnet ef database update --project BizTrak.Data --startup-project BizTrak.Api
 
 *** REACT/NPM CONFIGURATION ***
 

@@ -1,100 +1,221 @@
+using System.Linq.Expressions;
 using BizTrak.Data;
 using BizTrak.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 
 namespace BizTrak.UnitTests.Data;
 
-public class QuoteRepositoryTests
+public class QuoteRepositoryTests : IDisposable
 {
-    private readonly Mock<BizTrakDbContext> _mockContext;
-    private readonly Mock<DbSet<Quote>> _mockSet;
-    private readonly QuoteRepository _repository;
+    private readonly DbContextOptions<BizTrakDbContext> _options;
+    private readonly BizTrakDbContext _seedContext;
 
     public QuoteRepositoryTests()
     {
-        _mockContext = new Mock<BizTrakDbContext>();
-        _mockSet = new Mock<DbSet<Quote>>();
-        _mockContext.Setup(c => c.Quotes).Returns(_mockSet.Object);
-        _repository = new QuoteRepository(_mockContext.Object);
+        _options = new DbContextOptionsBuilder<BizTrakDbContext>()
+           .UseInMemoryDatabase(databaseName: $"BizTrakTestDb_{Guid.NewGuid()}")
+           .Options;
+
+        _seedContext = new BizTrakDbContext(_options);
+        _seedContext.Database.EnsureCreated();
+        InMemoryData.SeedDatabase(_seedContext);
+        _seedContext.SaveChangesAsync();
     }
 
     [Fact]
-    public async Task Should_Return_All_Quotes()
+    public async void ListQuotesAsync_Should_Return_AllQuotes()
     {
-        var data = new List<Quote>
+        using (var context = new BizTrakDbContext(_options))
         {
-            new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 },
-            new Quote { Id = 2, QuoteRef = "Ref2", Title = "", CustomerId = 0 }
-        }.AsQueryable();
+            var repository = new QuoteRepository(context);
+            var result = await repository.ListQuotesAsync();
 
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.Provider).Returns(data.Provider);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.Expression).Returns(data.Expression);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.ElementType).Returns(data.ElementType);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            Assert.NotNull(result);
 
-        var result = await _repository.ListQuotesAsync();
+            var quotes = result.ToList();
+            Assert.Equal(5, quotes.Count);
 
-        Assert.Equal(2, result.Count());
+            Assert.Equal("Test Customer 1", quotes[0].Customer.Name);
+            Assert.Equal("Test Customer 2", quotes[1].Customer.Name);
+        }
     }
 
     [Fact]
-    public async Task Should_Return_Quote_By_Id()
+    public async Task PagedQuotes_Returns_Correct_Page_And_Total()
     {
-        var quote = new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 };
-        _mockSet.Setup(m => m.FindAsync(1)).ReturnsAsync(quote);
+        // Arrange
+        using (var context = new BizTrakDbContext(_options))
+        {
+            var repository = new QuoteRepository(context);
 
-        var result = await _repository.GetQuoteAsync(1);
+            // Act
+            var page = 1;
+            var pageSize = 2;
+            Expression<Func<Quote, bool>> filter = q => true; // No filtering
+            var result = await repository.PagedQuotes(page, pageSize, filter);
+
+            // Assert
+            Assert.Equal(5, result.Total); // Total quotes
+            Assert.Equal(2, result.Quotes.Count()); // Page size
+            Assert.Equal(5, result.Quotes.First().Id); // Ordered descending by Id
+        }
+    }
+
+    [Fact]
+    public async Task PagedQuotes_Returns_Empty_For_No_Matching_Filter()
+    {
+        // Arrange
+        using (var context = new BizTrakDbContext(_options))
+        {
+            var repository = new QuoteRepository(context);
+
+            // Act
+            Expression<Func<Quote, bool>> filter = q => q.Customer.Name == "Nonexistent Customer";
+            var result = await repository.PagedQuotes(1, 5, filter);
+
+            // Assert
+            Assert.Equal(0, result.Total); // No matching quotes
+            Assert.Empty(result.Quotes); // No quotes in the result
+        }
+    }
+
+    [Fact]
+    public async Task GetQuoteAsync_Should_Get_Quote_By_Id()
+    {
+        using (var context = new BizTrakDbContext(_options))
+        {
+
+            var repository = new QuoteRepository(context);
+
+            var quote = await repository.GetQuoteAsync(1);
+
+            Assert.Equal(1, quote.Id);
+            Assert.Equal("Quote1 Title", quote.Title);
+        }
+    }
+
+    [Fact]
+    public async Task GetQuoteAsync_Should_Get_Tasks_And_Materials_When_IncludeRelated_True()
+    {
+        using (var context = new BizTrakDbContext(_options))
+        {
+
+            var repository = new QuoteRepository(context);
+
+            var quote = await repository.GetQuoteAsync(1, true);
+
+            Assert.Equal(1, quote.Id);
+            Assert.Equal(2, quote.Tasks.Count());
+            Assert.Equal(2, quote.Materials.Count());
+        }
+    }
+
+    [Fact]
+    public async Task GetQuoteAsync_Should_Not_Get_Tasks_And_Materials_When_IncludeRelated_False()
+    {
+        using (var context = new BizTrakDbContext(_options))
+        {
+
+            var repository = new QuoteRepository(context);
+
+            var quote = await repository.GetQuoteAsync(1);
+
+            Assert.Equal(1, quote.Id);
+            Assert.Empty(quote.Tasks);
+            Assert.Empty(quote.Materials);
+        }
+    }
+
+    [Fact]
+    public async Task AddAsync_WhenQuoteIsNull_ShouldThrowArgumentNullException()
+    {
+        using var context = new BizTrakDbContext(_options);
+        var repository = new QuoteRepository(context);
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() => repository.AddAsync(null!));
+    }
+
+    [Fact]
+    public async Task AddAsync_WhenQuoteIsValid_ShouldAddQuoteAndReturnIt()
+    {
+        using var context = new BizTrakDbContext(_options);
+        var repository = new QuoteRepository(context);
+
+        var quote = new Quote
+        {
+            Id = 123,
+            QuoteRef = "Q-123",
+            Title = "Test Quote",
+            CustomerId = 1
+        };
+
+        var result = await repository.AddAsync(quote);
+
+        Assert.NotNull(result);
 
         Assert.Equal(quote, result);
+
+        // The quote should be in the context's ChangeTracker,
+        // but not saved to the DB yet.
+        Assert.Single(context.Quotes.Local);
+        Assert.Same(quote, context.Quotes.Local.First());
     }
 
     [Fact]
-    public async Task Should_Create_Quote()
+    public async Task UpdateAsync_WhenQuoteIsNull_ShouldThrowArgumentNullException()
     {
-        // Arrange
-        var quote = new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 };
+        using var context = new BizTrakDbContext(_options);
+        var repository = new QuoteRepository(context);
 
-        // Act
-        await _repository.AddAsync(quote);
-
-        // Assert
-        _mockSet.Verify(m => m.AddAsync(quote, default), Times.Once);
-        _mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);
-    }
-
-    [Fact]
-    public void Should_Update_Quote()
-    {
-        // Arrange
-        var quote = new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 };
-
-        // Act
-        _repository.UpdateAsync(quote, quote);
-
-        // Assert
-        _mockSet.Verify(m => m.Update(quote), Times.Once);
-        _mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);
-    }
-
-    [Fact]
-    public async Task Should_Return_Paged_Quotes()
-    {
-        var data = new List<Quote>
+        var ex = await Assert.ThrowsAsync<ArgumentNullException>(() =>
         {
-            new Quote { Id = 1, QuoteRef = "Ref1", Title = "", CustomerId = 0 },
-            new Quote { Id = 2, QuoteRef = "Ref2", Title = "", CustomerId = 0 },
-            new Quote { Id = 3, QuoteRef = "Ref3", Title = "", CustomerId = 0 }
-        }.AsQueryable();
+            return Task.Run(() => repository.UpdateAsync(null!, InMemoryData.Quote1));
+        });
 
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.Provider).Returns(data.Provider);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.Expression).Returns(data.Expression);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.ElementType).Returns(data.ElementType);
-        _mockSet.As<IQueryable<Quote>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+        Assert.Contains("Quote cannot be null", ex.Message);
+    }
 
-        var result = await _repository.PagedQuotes(1, 2, null);
+    [Fact]
+    public async Task UpdateAsync_WhenValid_ShouldSetValuesFromUpdatedData()
+    {
+        // Arrange
+        using var context = new BizTrakDbContext(_options);
+        var repository = new QuoteRepository(context);
 
-        Assert.Equal(3, result.Total);
-        Assert.Equal(2, result.Quotes.Count());
+        var originalQuote = new Quote
+        {
+            QuoteRef = "Q-Original1",
+            Title = "Original Title",
+            CustomerId = 1
+        };
+
+        context.Quotes.Add(originalQuote);
+        await context.SaveChangesAsync();
+
+        var quoteToUpdate = await context.Quotes.FirstOrDefaultAsync(q => q.QuoteRef == "Q-Original1");
+
+        var updatedData = new Quote
+        {
+            Id = quoteToUpdate.Id,
+            QuoteRef = "Q-Updated1",
+            Title = "Updated Title",
+            CustomerId = 2
+        };
+
+        repository.UpdateAsync(quoteToUpdate!, updatedData);
+        await context.SaveChangesAsync();
+
+        var updatedQuote = await context.Quotes.FirstOrDefaultAsync(q => q.Id == quoteToUpdate!.Id);
+        Assert.NotNull(updatedQuote);
+        Assert.Equal("Q-Updated1", updatedQuote!.QuoteRef);
+        Assert.Equal("Updated Title", updatedQuote.Title);
+        Assert.Equal(2, updatedQuote.CustomerId);
+
+    }
+
+    public void Dispose()
+    {
+        _seedContext.Database.EnsureDeleted();
+        _seedContext.Dispose();
     }
 }

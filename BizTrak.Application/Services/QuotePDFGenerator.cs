@@ -31,7 +31,7 @@ public class QuotePdfGenerator
                     column.Item().PaddingVertical(5).Text("");
 
                     // Quote Reference
-                    column.Item().Text($"Quote Ref: {quote.QuoteRef.Replace("QUO", "QUO")}").FontSize(14).Bold();
+                    column.Item().Text($"Invoice Ref: {quote.QuoteRef.Replace("QUO", "INV")}").FontSize(14).Bold();
                     column.Item().PaddingBottom(20).Text($"For: {quote.Title}").FontSize(14);
 
                     column.Item().Text("Stuart Kinlochan").FontSize(14);
@@ -141,18 +141,18 @@ public class QuotePdfGenerator
                             columns.RelativeColumn();
                         });
 
-                        table.Cell().Text("Quote Total:").FontSize(14).Bold();
+                        table.Cell().Text("Invoice Total:").FontSize(14).Bold();
                         table.Cell().ColumnSpan(3).PaddingRight(8).AlignRight().Text($"\u00a3{quote.TotalAmount:0.00}").FontSize(14).Bold();
                     });
 
-                    // column.Item().PaddingTop(30).Text(text =>
-                    // {
-                    //     text.Span("SORTCODE: ").FontSize(14).Bold().FontColor(Color.FromHex("4f4f4f"));
-                    //     text.Span("601328").FontSize(14);
-                    //     text.Span("                                             ").FontColor(Colors.Transparent); // Add invisible non-breaking space
-                    //     text.Span("ACCOUNT NUMBER: ").FontSize(14).Bold().FontColor(Color.FromHex("4f4f4f"));
-                    //     text.Span("78198674").FontSize(14);
-                    // });
+                   column.Item().PaddingTop(30).Text(text =>
+                    {
+                        text.Span("SORTCODE: ").FontSize(14).Bold().FontColor(Color.FromHex("4f4f4f"));
+                        text.Span("601328").FontSize(14);
+                        text.Span("                                             ").FontColor(Colors.Transparent); // Add invisible non-breaking space
+                        text.Span("ACCOUNT NUMBER: ").FontSize(14).Bold().FontColor(Color.FromHex("4f4f4f"));
+                        text.Span("78198674").FontSize(14);
+                    });
 
                     // Footer
                     column.Item().PaddingTop(40).Text("Kind regards,").FontSize(14);

@@ -43,6 +43,7 @@ namespace BizTrak.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
