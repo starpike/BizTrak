@@ -156,7 +156,7 @@ npm run test:unit
 To run backend tests:
 
 ```bash
-cd BizTrak/BizTrak.Api
+cd BizTrak/BizTrak.UnitTests
 dotnet test
 ```
 
@@ -181,26 +181,6 @@ BizTrak provides a comprehensive API for managing quotes, invoices, tasks, and m
 
 ---
 
-## 🚀 Deployment
-
-### Deploying with Docker
-
-1. Build the Docker image:
-
-   ```bash
-   docker build -t biztrak .
-   ```
-
-2. Run the container:
-
-   ```bash
-   docker run -d -p 8080:80 --name biztrak-container biztrak
-   ```
-
-3. Access the app at `http://localhost:8080`
-
----
-
 ## 🔒 Security
 
 - JWT-based authentication is implemented for secure access.
@@ -214,18 +194,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`feature-new-feature`).
-3. Commit your changes (`git commit -m 'Add a new feature'`).
-4. Push to the branch (`git push origin feature-new-feature`).
-5. Open a Pull Request.
-
----
-
 ## 💎 Contact
 
 If you have any questions or need support, please contact:
@@ -234,11 +202,4 @@ If you have any questions or need support, please contact:
 - GitHub: [@stuartkinlochan](https://github.com/stuartkinlochan)
 
 ---
-
-## ⭐ Acknowledgements
-
-Special thanks to:
-
-- The Vue.js and ASP.NET Core communities for their fantastic frameworks.
-- Everyone who has contributed to improving BizTrak.
 
