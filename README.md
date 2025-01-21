@@ -58,31 +58,6 @@ BizTrak is a comprehensive quote and invoicing management system designed to hel
 
 ---
 
-## 💀 Project Structure
-
-```
-BizTrak
-│-- BizTrak.Web (Frontend - Vue.js)
-│   ├── src/
-│   ├── components/
-│   ├── views/
-│   ├── services/
-│   ├── store/
-│   ├── router/
-│-- BizTrak.Api (Backend - ASP.NET Core)
-│   ├── Controllers/
-│   ├── Models/
-│   ├── Services/
-│   ├── Repositories/
-│-- BizTrak.Tests (Unit Tests)
-│-- README.md
-│-- .gitignore
-│-- package.json (Frontend dependencies)
-│-- BizTrak.sln (Solution file for backend)
-```
-
----
-
 ## ⚙️ Installation & Setup
 
 ### Prerequisites
