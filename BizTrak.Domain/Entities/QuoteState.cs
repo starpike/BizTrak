@@ -5,5 +5,8 @@ public enum QuoteState
     Draft,
     Sent,
     Accepted,
-    Rejected
+    Rejected,
+    Booked,
+    Invoiced,
+    Paid
 }

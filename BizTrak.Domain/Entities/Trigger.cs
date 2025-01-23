@@ -4,5 +4,7 @@ public enum Trigger
 {
     Send,
     Accept,
-    Reject
+    Reject,
+    Book,
+    Invoice
 }
