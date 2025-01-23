@@ -152,7 +152,7 @@ BizTrak provides a comprehensive API for managing quotes, invoices, tasks, and m
 ![Quote List](docs/screenshots/quote-list.png)
 
 ### Quote Details View
-![Quoye Details](docs/screenshots/quote-details.png)
+![Quote Details](docs/screenshots/quote-detail.png)
 
 ### Quote Edit View
 ![Customer Edit](docs/screenshots/quote-edit.png)
