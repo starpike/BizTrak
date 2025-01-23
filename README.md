@@ -151,9 +151,14 @@ BizTrak provides a comprehensive API for managing quotes, invoices, tasks, and m
 ### Quote List View
 ![Quote List](docs/screenshots/quote-list.png)
 
-### Customer Details View
-![Customer Details](docs/screenshots/customer-details.png)
+### Quote Details View
+![Quoye Details](docs/screenshots/quote-details.png)
 
+### Quote Edit View
+![Customer Edit](docs/screenshots/quote-edit.png)
+
+### Scheduler View
+![Job Scheduler](docs/screenshots/job-scheduler.png)
 ---
 
 ## 🔒 Security
